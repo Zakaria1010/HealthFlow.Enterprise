@@ -1,5 +1,6 @@
 ## 🔗 Component Interaction Overview
 
+```mermaid
 sequenceDiagram
 title HealthFlow - Component Interaction Overview
 participant U as User

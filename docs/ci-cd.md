@@ -1,5 +1,6 @@
 ## 🚀 Azure DevOps CI/CD Pipeline
 
+```mermaid
 sequenceDiagram
 title Azure DevOps CI/CD Pipeline
 participant Dev as Developer

@@ -1,5 +1,6 @@
 ## 🛡️ Error Handling & Resilience Flow
 
+```mermaid
 sequenceDiagram
 title Error Handling & Retry Mechanisms
 participant Client as Client

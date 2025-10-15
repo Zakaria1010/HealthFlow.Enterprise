@@ -1,5 +1,6 @@
 ## ⚙️ Background Worker - Channel Processing Flow
 
+```mermaid
 sequenceDiagram
 title Background Worker - Channel Processing Flow
 participant RMQ as RabbitMQ
