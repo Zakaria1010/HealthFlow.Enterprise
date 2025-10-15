@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj": {}
+    "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj": {}
   },
   "projects": {
-    "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj": {
+    "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj",
+        "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj",
         "projectName": "HealthFlow.Services.Analytics",
-        "projectPath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj",
+        "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Analytics/HealthFlow.Services.Analytics.csproj",
         "packagesPath": "/Users/steve/.nuget/packages/",
-        "outputPath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Analytics/obj/",
+        "outputPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Analytics/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/steve/.nuget/NuGet/NuGet.Config"
@@ -26,7 +26,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj": {
+                "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -39,9 +43,21 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AspNetCore.HealthChecks.CosmosDb": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.5, )"
+            },
+            "Microsoft.Azure.Cosmos": {
+              "target": "Package",
+              "version": "[3.54.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -63,6 +79,59 @@
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
             },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
+        "projectName": "HealthFlow.Shared",
+        "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
+        "packagesPath": "/Users/steve/.nuget/packages/",
+        "outputPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/steve/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

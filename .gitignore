@@ -1,0 +1,46 @@
+# === .NET ===
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# Visual Studio Code
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# === Node / React ===
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Docker ===
+docker-compose.override.yml
+*.dockerfile
+tmp/
+*.log
+
+# === Azure / CI ===
+*.publishsettings
+*.azurePubxml
+.vspscc
+*.userprefs

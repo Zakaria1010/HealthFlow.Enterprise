@@ -1,0 +1,144 @@
+/* Patient Selection */
+.patient-selection {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+  }
+  
+  .patient-selection h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .patient-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .patient-btn {
+    background: #ecf0f1;
+    border: 2px solid #bdc3c7;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .patient-btn:hover {
+    background: #d5dbdb;
+    border-color: #95a5a6;
+  }
+  
+  .patient-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #2980b9;
+  }
+  
+  .patient-status {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .patient-status.admitted {
+    background: #3498db;
+    color: white;
+  }
+  
+  .patient-status.intreatment {
+    background: #f39c12;
+    color: white;
+  }
+  
+  .patient-status.critical {
+    background: #e74c3c;
+    color: white;
+  }
+  
+  .patient-status.discharged {
+    background: #27ae60;
+    color: white;
+  }
+  
+  /* Patient-specific Events */
+  .patient-events-section {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+  }
+  
+  .patient-events-section h3 {
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .unsubscribe-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .unsubscribe-btn:hover {
+    background: #c0392b;
+  }
+  
+  /* Enhanced Event Items */
+  .event-service {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    background: #ecf0f1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+  
+  /* Connection Status Enhancements */
+  .status-text {
+    font-weight: 600;
+  }
+  
+  /* Responsive Design Updates */
+  @media (max-width: 768px) {
+    .patient-buttons {
+      flex-direction: column;
+    }
+    
+    .patient-btn {
+      width: 100%;
+    }
+    
+    .patient-events-section h3 {
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+  }

@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Shared/HealthFlow.Shared.csproj",
+      "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
       "projectName": "HealthFlow.Shared",
-      "projectPath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Shared/HealthFlow.Shared.csproj",
+      "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
       "packagesPath": "/Users/steve/.nuget/packages/",
-      "outputPath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Shared/obj/",
+      "outputPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/steve/.nuget/NuGet/NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AWgWdOKIrm3YrwXplxR7XOtOX7Yzw7Il4lO4Wc3tfIw0SxprrcHIWTJ2ZvivOigrOA4Z0gNk8TLglrtZ91X5KQ==",
+  "dgSpecHash": "LrLScM48sNYox9vSNOZ/OMbTwQexgXB1LiUZCCA/xU89sXb4GyDeTL4FdAJE0qTFBqqJkJIKz/9W+z3xgeGIhA==",
   "success": true,
-  "projectFilePath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Shared/HealthFlow.Shared.csproj",
+  "projectFilePath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
