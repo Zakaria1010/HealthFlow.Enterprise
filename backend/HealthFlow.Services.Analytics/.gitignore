@@ -1,2 +1,28 @@
+# Build artifacts
+bin/
+obj/
+
+# Visual Studio / Rider / VS Code files
+.vs/
+.vscode/
+*.user
+*.suo
+*.ide
+
+# Node / frontend
+node_modules/
+dist/
+
+# Local development secrets
+appsettings.Development.json
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
 # Local development secrets
 appsettings.Development.json
