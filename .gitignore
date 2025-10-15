@@ -44,3 +44,7 @@ tmp/
 *.azurePubxml
 .vspscc
 *.userprefs
+
+
+.env
+appsettings.Development.json
