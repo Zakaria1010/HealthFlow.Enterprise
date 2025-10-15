@@ -47,4 +47,8 @@ tmp/
 
 
 # Local development secrets
-appsettings.Development.json
+backend/HealthFlow.API.Gateway/appsettings.Development.json
+backend/HealthFlow.BackgroundWorker/appsettings.Development.json
+backend/HealthFlow.Services.Analytics/appsettings.Development.json
+backend/HealthFlow.Services.Notifications/appsettings.Development.json
+backend/HealthFlow.Services.Patients/appsettings.Development.json
