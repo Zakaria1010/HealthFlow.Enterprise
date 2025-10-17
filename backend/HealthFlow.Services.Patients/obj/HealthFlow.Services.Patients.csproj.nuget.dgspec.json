@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj": {}
+    "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj": {}
   },
   "projects": {
-    "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj": {
+    "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj",
+        "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj",
         "projectName": "HealthFlow.Services.Patients",
-        "projectPath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj",
+        "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Patients/HealthFlow.Services.Patients.csproj",
         "packagesPath": "/Users/steve/.nuget/packages/",
-        "outputPath": "/Users/steve/HealthFlow.Enterprise/src/HealthFlow.Services.Patients/obj/",
+        "outputPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Patients/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/steve/.nuget/NuGet/NuGet.Config"
@@ -26,7 +26,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj": {
+                "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -39,9 +43,43 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AspNetCore.HealthChecks.RabbitMQ": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.5, )"
+            },
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.*, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
+            "Microsoft.FeatureManagement": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.6.4, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.*, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -63,6 +101,65 @@
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
             },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
+        "projectName": "HealthFlow.Shared",
+        "projectPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
+        "packagesPath": "/Users/steve/.nuget/packages/",
+        "outputPath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/steve/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.*, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

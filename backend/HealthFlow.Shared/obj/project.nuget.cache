@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "LrLScM48sNYox9vSNOZ/OMbTwQexgXB1LiUZCCA/xU89sXb4GyDeTL4FdAJE0qTFBqqJkJIKz/9W+z3xgeGIhA==",
+  "dgSpecHash": "klWX848uYTHM+1apogk2rqFSmFVuSIVjKP0rCCJPjwgKDCPs28KWqWUovVzxJrwSvi7z87DAFEAFTYdUq2i7cw==",
   "success": true,
   "projectFilePath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/steve/.nuget/packages/rabbitmq.client/6.8.1/rabbitmq.client.6.8.1.nupkg.sha512",
+    "/Users/steve/.nuget/packages/system.memory/4.5.5/system.memory.4.5.5.nupkg.sha512",
+    "/Users/steve/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

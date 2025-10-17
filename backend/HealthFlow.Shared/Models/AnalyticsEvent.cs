@@ -76,6 +76,7 @@ namespace HealthFlow.Shared.Models
         // Patient events
         public const string PatientCreated = "PatientCreated";
         public const string PatientUpdated = "PatientUpdated";
+        public const string PatientDeleted = "PatientDeleted";
         public const string PatientStatusChanged = "PatientStatusChanged";
         public const string PatientAdmitted = "PatientAdmitted";
         public const string PatientDischarged = "PatientDischarged";
@@ -109,7 +110,7 @@ namespace HealthFlow.Shared.Models
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
 
-    public class VitalSignsPayload
+    /*public class VitalSignsPayload
     {
         public string PatientId { get; set; } = string.Empty;
         public string DeviceId { get; set; } = string.Empty;
@@ -120,7 +121,7 @@ namespace HealthFlow.Shared.Models
         public double? OxygenSaturation { get; set; }
         public string? Status { get; set; } // Normal, Warning, Critical
         public DateTime MeasuredAt { get; set; } = DateTime.UtcNow;
-    }
+    } */
 
     public class SystemAlertPayload
     {

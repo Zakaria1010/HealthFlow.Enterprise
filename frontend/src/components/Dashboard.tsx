@@ -62,7 +62,7 @@ export const Dashboard: React.FC = () => {
   useEffect(() => {
     initializeSignalR();
     loadDashboardData();
-    // loadPatients();
+    loadPatients();
     
     const interval = setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
     
