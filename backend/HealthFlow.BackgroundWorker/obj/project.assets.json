@@ -2,6 +2,23 @@
   "version": 3,
   "targets": {
     "net7.0": {
+      "AspNetCore.HealthChecks.Rabbitmq/7.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
+          "RabbitMQ.Client": "6.5.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/HealthChecks.Rabbitmq.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/HealthChecks.Rabbitmq.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Azure.Core/1.44.1": {
         "type": "package",
         "dependencies": {
@@ -307,6 +324,38 @@
         },
         "build": {
           "buildTransitive/netcoreapp2.0/Microsoft.Extensions.DependencyInjection.Abstractions.targets": {}
+        }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks/7.0.20": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "7.0.20",
+          "Microsoft.Extensions.Hosting.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
+          "Microsoft.Extensions.Options": "7.0.1"
+        },
+        "compile": {
+          "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions/7.0.20": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll": {
+            "related": ".xml"
+          }
         }
       },
       "Microsoft.Extensions.FileProviders.Abstractions/7.0.0": {
@@ -1069,7 +1118,10 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+          "AspNetCore.HealthChecks.RabbitMQ": "7.0.0",
           "Microsoft.Extensions.Configuration": "9.0.10",
+          "Microsoft.Extensions.DependencyInjection": "9.0.10",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.0",
           "Microsoft.Extensions.Logging": "9.0.10",
           "RabbitMQ.Client": "6.0.0"
         },
@@ -1083,6 +1135,21 @@
     }
   },
   "libraries": {
+    "AspNetCore.HealthChecks.Rabbitmq/7.0.0": {
+      "sha512": "ATXOR3pWLCG3ip1vjjhOQY3vJR3SHcqQUfwuxOpOzwlweTkNhsbRjHQgqCQUDFBGvahs553/pgtGDap2S7Aofw==",
+      "type": "package",
+      "path": "aspnetcore.healthchecks.rabbitmq/7.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "aspnetcore.healthchecks.rabbitmq.7.0.0.nupkg.sha512",
+        "aspnetcore.healthchecks.rabbitmq.nuspec",
+        "icon.png",
+        "lib/netstandard2.0/HealthChecks.Rabbitmq.dll",
+        "lib/netstandard2.0/HealthChecks.Rabbitmq.xml"
+      ]
+    },
     "Azure.Core/1.44.1": {
       "sha512": "YyznXLQZCregzHvioip07/BkzjuWNXogJEVz9T5W6TwjNr17ax41YGzYMptlo2G10oLCuVPoyva62y0SIRDixg==",
       "type": "package",
@@ -1460,6 +1527,44 @@
         "microsoft.extensions.dependencyinjection.abstractions.9.0.10.nupkg.sha512",
         "microsoft.extensions.dependencyinjection.abstractions.nuspec",
         "useSharedDesignerContext.txt"
+      ]
+    },
+    "Microsoft.Extensions.Diagnostics.HealthChecks/7.0.20": {
+      "sha512": "ZzAWpLzPZIM9l0C0pJCihh/+lZJzLxoddFti0ZddrDXAlRXw9/h8bAdqinTR6SPx2LFiZNhRBH6qoJcZ7lMpAw==",
+      "type": "package",
+      "path": "microsoft.extensions.diagnostics.healthchecks/7.0.20",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net462/Microsoft.Extensions.Diagnostics.HealthChecks.dll",
+        "lib/net462/Microsoft.Extensions.Diagnostics.HealthChecks.xml",
+        "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.dll",
+        "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Diagnostics.HealthChecks.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Diagnostics.HealthChecks.xml",
+        "microsoft.extensions.diagnostics.healthchecks.7.0.20.nupkg.sha512",
+        "microsoft.extensions.diagnostics.healthchecks.nuspec"
+      ]
+    },
+    "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions/7.0.20": {
+      "sha512": "6H9PxoOrVzhygyBs30gvKw16IQioDkNUHLGJfpilBDl+jWpsyoWkWDNhNxixODC60onoi33jOLo5N+VXwIJXfw==",
+      "type": "package",
+      "path": "microsoft.extensions.diagnostics.healthchecks.abstractions/7.0.20",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net462/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll",
+        "lib/net462/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.xml",
+        "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll",
+        "lib/net7.0/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.xml",
+        "microsoft.extensions.diagnostics.healthchecks.abstractions.7.0.20.nupkg.sha512",
+        "microsoft.extensions.diagnostics.healthchecks.abstractions.nuspec"
       ]
     },
     "Microsoft.Extensions.FileProviders.Abstractions/7.0.0": {

@@ -1,10 +1,10 @@
+using HealthFlow.Shared.Messaging;
+using HealthFlow.Shared.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Text.Json;
-using System;
 using System.Text;
+using System.Text.Json;
 using HealthFlow.BackgroundWorker.Services;
-using HealthFlow.Shared.Models;
 
 namespace HealthFlow.BackgroundWorker.Consumers;
 public class PatientEventConsumer : BackgroundService
@@ -15,13 +15,14 @@ public class PatientEventConsumer : BackgroundService
     private readonly ILogger<PatientEventConsumer> _logger;
 
     public PatientEventConsumer(
-        IConnection connection, 
+        IMessagePublisher messagePublisher,
         PatientProcessingChannel processingChannel,
         ILogger<PatientEventConsumer> logger)
     {
-        _connection = connection;
-        _logger = logger;
         _processingChannel = processingChannel;
+        _logger = logger;
+
+        _connection = messagePublisher.GetConnection();
         _channel = _connection.CreateModel();
 
         // Declare RabbitMQ exchange and queue
@@ -30,7 +31,7 @@ public class PatientEventConsumer : BackgroundService
         _channel.QueueBind("patient-processing", "patient.events", "patient.*");
 
         // Set quality of service
-        _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+        _channel.BasicQos(prefetchSize: 0, prefetchCount: 10, global: false);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

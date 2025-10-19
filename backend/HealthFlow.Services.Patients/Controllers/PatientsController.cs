@@ -92,7 +92,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Patient>> CreatePatient(Patient patient)
+    public async Task<ActionResult<Patient>> CreatePatient(Patient patient, CancellationToken cancellationToken)
     {   try
         {
             // Validate MedicalRecordNumber uniqueness
@@ -116,7 +116,7 @@ public class PatientsController : ControllerBase
                 patient.Id.ToString(), 
                 payload, Guid.NewGuid().ToString());
 
-            await _messagePublisher.PublishAsync("patients.events", message);
+            await _messagePublisher.PublishAsync("patients.events", message, cancellationToken);
             await _hubContext.Clients.All.SendAsync("PatientCreated", patient);
             
             _logger.LogInformation("Patient created: {PatientId}", patient.Id);
@@ -131,7 +131,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdatePatient(Guid id, Patient patient) 
+    public async Task<IActionResult> UpdatePatient(Guid id, Patient patient, CancellationToken cancellationToken) 
     {
         try
         {
@@ -176,7 +176,7 @@ public class PatientsController : ControllerBase
                     patient.Status
                 });
 
-            await _messagePublisher.PublishAsync("patient.events", message);
+            await _messagePublisher.PublishAsync("patient.events", message, cancellationToken);
             await _hubContext.Clients.All.SendAsync("PatientUpdated", patient);
 
             return NoContent();
@@ -190,7 +190,7 @@ public class PatientsController : ControllerBase
     } 
 
     [HttpPut("{id}/status")]
-    public async Task<IActionResult> UpdatePatientStatus(int id, PatientStatus status) 
+    public async Task<IActionResult> UpdatePatientStatus(int id, PatientStatus status, CancellationToken cancellationToken) 
     {
         try
         {
@@ -219,7 +219,7 @@ public class PatientsController : ControllerBase
                 status.ToString(),
                 Guid.NewGuid().ToString());
 
-            await _messagePublisher.PublishAsync("patient.events", message);
+            await _messagePublisher.PublishAsync("patient.events", message, cancellationToken);
             await _hubContext.Clients.All.SendAsync("PatientStatusUpdated", new {patient.Id, status});
 
             _logger.LogInformation("Patient status updated: {PatientId} from {OldStatus} to {NewStatus}", patient.Id, oldStatus, status);
@@ -234,7 +234,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletePatient(Guid id) 
+    public async Task<IActionResult> DeletePatient(Guid id, CancellationToken cancellationToken) 
     {
         try
         {
@@ -257,7 +257,7 @@ public class PatientsController : ControllerBase
                 payload,
                 Guid.NewGuid().ToString()) ;
 
-            await _messagePublisher.PublishAsync("patient.events", message);
+            await _messagePublisher.PublishAsync("patient.events", message, cancellationToken);
             await _hubContext.Clients.All.SendAsync("PatientDeleted", new {patient.Id});
 
             _logger.LogInformation("Patient deleted: {PatientId} - {FullName}", patient.Id, patient.FullName);

@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HealthFlow.Services.Patients.Data;
 using HealthFlow.Services.Patients.Hubs;
-using HealthFlow.Services.Patients.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.FeatureManagement;
@@ -47,14 +46,6 @@ builder.Services.AddHealthChecks()
 
 // Feature Management
 builder.Services.AddFeatureManagement();
-
-// Health checks
-/*builder.Services.AddHealthChecks()
-    .AddRabbitMQ(sp => sp.GetRequiredService<IMessagePublisher>().GetConnection(),
-                 name: "rabbitmq",
-                 timeout: TimeSpan.FromSeconds(5),
-                 tags: new[] { "messaging" }); */
-
 
 // CORS
 builder.Services.AddCors(options =>

@@ -1,6 +1,6 @@
 using Microsoft.Azure.Cosmos;
-namespace HealthFlow.Infrastructure.Database;
 
+namespace HealthFlow.Infrastructure.Database;
 public static class CosmosDBServiceExtensions {
 
     public static IServiceCollection AddCosmosDB(this IServiceCollection services, IConfiguration configuration)

@@ -55,20 +55,20 @@ namespace HealthFlow.Shared.Messaging
 
         public async Task PublishAsync<T>(string queueName, T message, CancellationToken cancellationToken) where T : class
         {
-            await PublishAsync("patient.events", queueName, message);
+            await PublishAsync("patient.events", queueName, message, cancellationToken);
         }
 
         public async Task PublishAsync(string queueName, PatientMessage message, CancellationToken cancellationToken)
         {
-            await PublishAsync("patient.events", queueName, message);
+            await PublishAsync("patient.events", queueName, message, cancellationToken);
         }
 
-        public async Task PublishAsync(string exchange, string routingKey, PatientMessage message)
+        public async Task PublishAsync(string exchange, string routingKey, PatientMessage message, CancellationToken cancellationToken)
         {
-            await PublishAsync<PatientMessage>(exchange, routingKey, message);
+            await PublishAsync<PatientMessage>(exchange, routingKey, message, cancellationToken);
         }
 
-        public async Task PublishAsync<T>(string exchange, string routingKey, T message) where T : class
+        public async Task PublishAsync<T>(string exchange, string routingKey, T message, CancellationToken cancellationToken) where T : class
         {
             if (!IsConnected)
             {

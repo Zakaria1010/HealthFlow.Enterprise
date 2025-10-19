@@ -1,6 +1,11 @@
 using HealthFlow.Services.Analytics.Extensions;
 using HealthFlow.Services.Analytics.Hubs;
 using HealthFlow.Services.Analytics.HealthChecks;
+using HealthFlow.Services.Analytics.Consumers; // Add this
+using HealthFlow.Shared.Messaging;
+using HealthFlow.Shared.Data;
+using HealthFlow.Services.Analytics.Data;
+using Microsoft.Azure.Cosmos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +16,26 @@ builder.Services.AddSwaggerGen();
 
 // Cosmos DB
 builder.Services.AddCosmosDb(builder.Configuration);
+
+// RabbitMQ from Shared project
+builder.Services.AddRabbitMQWithHealthCheck(builder.Configuration);
+
+// Add Analytics Event Consumer
+builder.Services.AddHostedService<AnalyticsEventConsumer>();
+
+// Analytics Repository
+// 2️⃣ Register AnalyticsRepository (Scoped or Singleton, depending on usage)
+builder.Services.AddScoped<IAnalyticsRepository>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var cosmosClient = sp.GetRequiredService<CosmosClient>();
+    var logger = sp.GetRequiredService<ILogger<AnalyticsRepository>>();
+
+    var dbId = config["CosmosDb:DatabaseId"];
+    var containerId = config["CosmosDb:ContainerId"];
+
+    return new AnalyticsRepository(cosmosClient, dbId, containerId, logger);
+});
 
 // SignalR for real-time dashboard updates
 builder.Services.AddSignalR();

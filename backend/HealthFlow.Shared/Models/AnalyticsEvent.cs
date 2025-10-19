@@ -33,14 +33,14 @@ namespace HealthFlow.Shared.Models
         public string PartitionKey => PatientId;
 
         // Helper methods for common event types
-        public static AnalyticsEvent CreatePatientEvent(string patientId, string eventType, object payload)
+        public static AnalyticsEvent CreatePatientEvent(string patientId, string eventType, string serviceName, object payload)
         {
             return new AnalyticsEvent
             {
                 PatientId = patientId,
                 EventType = eventType,
                 Payload = payload,
-                Service = "PatientService",
+                Service = serviceName,
                 Timestamp = DateTime.UtcNow
             };
         }

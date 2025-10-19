@@ -1,26 +1,31 @@
-
+using System.Diagnostics;
 using HealthFlow.Shared.Models;
 using HealthFlow.Shared.Messaging;
+using HealthFlow.Shared.Data;
+using HealthFlow.BackgroundWorker.Data;
 
 namespace HealthFlow.BackgroundWorker.Services;
 public class PatientProcessingService : BackgroundService
 {
     private readonly PatientProcessingChannel _channel;
-    private readonly IMessagePublisher _messagePublisher;
-    // private readonly IAnalyticsRepository _analyticsRepository;
+    private readonly IProcessingRepository _processingRepository;
+    private readonly IMessagePublisher _messagePublisher;   
     private readonly ILogger<PatientProcessingService> _logger;
     private readonly int _workerCount = 3; // Configurable worker count
+    private readonly SemaphoreSlim _semaphore;
+
 
     public PatientProcessingService(
         PatientProcessingChannel channel,
         IMessagePublisher messagePublisher,
-        // IAnalyticsRepository analyticsRepository,
-        ILogger<PatientProcessingService> logger)
+        ILogger<PatientProcessingService> logger,
+        IProcessingRepository processingRepository)
     {
         _channel = channel;
         _messagePublisher = messagePublisher;
-        // _analyticsRepository = analyticsRepository;
         _logger = logger;
+        _processingRepository = processingRepository;
+        _semaphore = new SemaphoreSlim(_workerCount, _workerCount);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -32,19 +37,19 @@ public class PatientProcessingService : BackgroundService
         // Start multiple workers for parallel processing
         for (int i = 0; i < _workerCount; i++)
         {
-            tasks.Add(Task.Run(() => ProcessMessagesAsync(stoppingToken), stoppingToken));
+            tasks.Add(Task.Run(() => ProcessMessagesAsync($"Worker-{i + 1}", stoppingToken), stoppingToken));
         }
 
         await Task.WhenAll(tasks);
     }
 
-    private async Task ProcessMessagesAsync(CancellationToken stoppingToken)
+    private async Task ProcessMessagesAsync(string WorkerName, CancellationToken stoppingToken)
     {
         await foreach (var message in _channel.ReadAllAsync(stoppingToken))
         {
             try
             {
-                await ProcessMessageAsync(message, stoppingToken);
+                await ProcessMessageAsync(message, WorkerName, stoppingToken);
             }
             catch (Exception ex)
             {
@@ -53,25 +58,49 @@ public class PatientProcessingService : BackgroundService
         }
     }
 
-    private async Task ProcessMessageAsync(PatientMessage message, CancellationToken cancellationToken)
+    private async Task ProcessMessageAsync(PatientMessage message, string workerName, CancellationToken cancellationToken)
     {
-        // Simulate processing work
-        await Task.Delay(100, cancellationToken);
+        var stopwatch = Stopwatch.StartNew();
+       try
+       {
+            _logger.LogInformation("Worker {WorkerName} processing message {MessageId} for patient {PatientId}", workerName, message.Id, message.PatientId);
+            
+            // Store in Background Worker's own database for tracking
+            var processedEvent = new ProcessedEvent
+            {
+                OriginalMessageId = message.Id.ToString(),
+                PatientId = message.PatientId,
+                EventType = message.EventType,
+                ReceivedAt = DateTime.UtcNow,
+                Status = "Processing",
+                Payload = message.Payload,
+                RetryCount = 0
+            };
 
-        // Store in Cosmos DB for analytics
-        /*await _analyticsRepository.AddAsync(new AnalyticsEvent
-        {
-            Id = message.Id.ToString(),
-            PatientId = message.PatientId,
-            EventType = message.EventType,
-            Timestamp = message.Timestamp,
-            Payload = message.Payload
-        }, cancellationToken); */
+            await _processingRepository.AddAsync(processedEvent);
 
-        // Publish to RabbitMQ for other services
-        await _messagePublisher.PublishAsync("patient.events", message, cancellationToken);
+            // Store in Cosmos DB for analytics
+            var analyticsEvent = AnalyticsEvent.CreatePatientEvent(
+                message.PatientId,
+                "PatientDataProcessed",
+                "BackgroundWorker",
+                message.Payload);
 
-        _logger.LogInformation("Processed message: {MessageId} for patient {PatientId}", 
-            message.Id, message.PatientId);
+            await _messagePublisher.PublishAsync(
+                "analytics.events",
+                "analytics.event.processed",
+                analyticsEvent, 
+                cancellationToken);
+            
+            // Simulate processing work
+            await Task.Delay(Random.Shared.Next(50, 200), cancellationToken);
+            stopwatch.Stop();
+            _logger.LogInformation("{WorkerName} completed message {MessageId} in {ElapsedMs}ms", 
+                workerName, message.Id, stopwatch.ElapsedMilliseconds);
+       }
+       catch (Exception ex)
+       {      
+            _logger.LogError(ex, "{WorkerName} error processing message {MessageId}", workerName, message.Id);
+       }
     }
 }

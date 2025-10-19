@@ -121,9 +121,21 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AspNetCore.HealthChecks.RabbitMQ": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
               "version": "[9.0.10, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks": {
+              "target": "Package",
+              "version": "[7.*, )"
             },
             "Microsoft.Extensions.Logging": {
               "target": "Package",

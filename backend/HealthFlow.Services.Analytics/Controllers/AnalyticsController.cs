@@ -11,12 +11,11 @@ namespace HealthFlow.Services.Analytics.Controllers
     [Route("api/[controller]")]
     public class AnalyticsController : ControllerBase
     {
-        private readonly IRepository<AnalyticsEvent> _repository;
+        private readonly IAnalyticsRepository _repository; // Use specialized repository        
         private readonly IHubContext<AnalyticsHub> _hubContext;
         private readonly ILogger<AnalyticsController> _logger;
-
         public AnalyticsController(
-            IRepository<AnalyticsEvent> repository,
+            IAnalyticsRepository repository,
             IHubContext<AnalyticsHub> hubContext,
             ILogger<AnalyticsController> logger)
         {
@@ -169,20 +168,21 @@ namespace HealthFlow.Services.Analytics.Controllers
             try
             {
                 startDate ??= DateTime.UtcNow.AddDays(-7);
-                
-                var events = (await _repository.GetAsync(e => e.Timestamp >= startDate.Value)).ToList();
+                // Use specialized repository methods
+                var events = (await _repository.GetByTimeRangeAsync(startDate.Value, DateTime.UtcNow)).ToList();
+                var eventTypeDistribution = await _repository.GetEventTypeDistributionAsync(startDate);
+                var uniquePatientCount = await _repository.GetUniquePatientCountAsync(startDate);
 
                 var dashboardData = new DashboardData
                 {
-                    TotalPatients = events.Where(e => e.PatientId != "system").Select(e => e.PatientId).Distinct().Count(),
+                    TotalPatients = uniquePatientCount,
                     AverageWaitTime = CalculateAverageWaitTime(events),
                     CriticalPatients = events.Count(e => e.EventType == EventTypes.PatientCritical),
                     AdmittedToday = events.Count(e => 
                         e.EventType == EventTypes.PatientAdmitted && 
                         e.Timestamp.Date == DateTime.UtcNow.Date),
                     TotalEvents = events.Count,
-                    EventsByType = events.GroupBy(e => e.EventType)
-                                        .ToDictionary(g => g.Key, g => g.Count()),
+                    EventsByType = eventTypeDistribution,
                     PatientStatusDistribution = await GetPatientStatusDistribution(events),
                     HourlyAdmissions = GenerateHourlyAdmissions(events),
                     WaitTimeTrend = GenerateWaitTimeTrend(events),
@@ -190,7 +190,7 @@ namespace HealthFlow.Services.Analytics.Controllers
                 };
 
                 _logger.LogInformation("Dashboard data generated for {EventCount} events since {StartDate}", 
-                    events.Count, startDate);
+                    events.Count, startDate.ToString());
 
                 return dashboardData;
             }

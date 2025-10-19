@@ -45,7 +45,7 @@
           "dependencies": {
             "AspNetCore.HealthChecks.CosmosDb": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[7.*, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
@@ -54,6 +54,14 @@
             "Microsoft.Azure.Cosmos": {
               "target": "Package",
               "version": "[3.54.0, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.*, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -121,6 +129,26 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AspNetCore.HealthChecks.RabbitMQ": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks": {
+              "target": "Package",
+              "version": "[7.*, )"
+            },
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
             "RabbitMQ.Client": {
               "target": "Package",
               "version": "[6.*, )"

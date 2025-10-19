@@ -43,6 +43,14 @@ namespace HealthFlow.Services.Analytics.Extensions
                 return new CosmosRepository<AnalyticsEvent>(cosmosClient, databaseId, containerId, logger);
             });
 
+            // Register the specialized analytics repository
+            services.AddScoped<IAnalyticsRepository>(provider =>
+            {
+                var cosmosClient = provider.GetRequiredService<CosmosClient>();
+                var logger = provider.GetRequiredService<ILogger<AnalyticsRepository>>();
+                return new AnalyticsRepository(cosmosClient, databaseId, containerId, logger);
+            });
+
             return services;
         }
 
