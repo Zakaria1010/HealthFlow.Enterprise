@@ -8,6 +8,7 @@ using Microsoft.FeatureManagement;
 using HealthFlow.Shared.Messaging;
 using HealthChecks.RabbitMQ;
 using Polly;
+using HealthFlow.Shared.Messaging; 
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,14 +38,15 @@ builder.Services.AddDbContext<PatientDbContext>(options =>
 builder.Services.AddSignalR();
 
 // RabbitMQ
-builder.Services.AddSingleton<IMessagePublisher, RabbitMQPublisher>();
-
-// Feature Management
-builder.Services.AddFeatureManagement();
+// RabbitMQ Publisher from Shared project
+builder.Services.AddRabbitMQWithHealthCheck(builder.Configuration);
 
 // Health Checks
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<PatientDbContext>();
+
+// Feature Management
+builder.Services.AddFeatureManagement();
 
 // Health checks
 /*builder.Services.AddHealthChecks()

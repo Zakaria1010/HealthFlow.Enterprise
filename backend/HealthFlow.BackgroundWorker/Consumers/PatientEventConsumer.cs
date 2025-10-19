@@ -1,4 +1,10 @@
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Text.Json;
+using System;
+using System.Text;
+using HealthFlow.BackgroundWorker.Services;
+using HealthFlow.Shared.Models;
 
 namespace HealthFlow.BackgroundWorker.Consumers;
 public class PatientEventConsumer : BackgroundService
@@ -19,18 +25,18 @@ public class PatientEventConsumer : BackgroundService
         _channel = _connection.CreateModel();
 
         // Declare RabbitMQ exchange and queue
-        _channel.ExchangeDeclare("patient.events", Exchange.Topic, durable: true);
+        _channel.ExchangeDeclare("patient.events", "topic", durable: true);
         _channel.QueueDeclare("patient-processing", durable: true, exclusive: false, autoDelete: false);
         _channel.QueueBind("patient-processing", "patient.events", "patient.*");
 
         // Set quality of service
-        _channel.BasicQos(perefetchSize: 0, prefetchCount: 1, global: false);
+        _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var consumer = new AsyncEventingBasicConsumer(_channel);
-        consumer.ReceivedAsync += async (model, ea) => 
+        consumer.Received += async (model, ea) => 
         {
             try
             {
@@ -42,7 +48,7 @@ public class PatientEventConsumer : BackgroundService
                     messageJson,
                     new JsonSerializerOptions
                     {
-                        PropertyNameCaseInsesitive = true
+                        PropertyNameCaseInsensitive = true
                     });
                 
                 if(message != null) 
@@ -52,11 +58,11 @@ public class PatientEventConsumer : BackgroundService
                         message.EventType, message.PatientId);
 
                     await _processingChannel.WriteAsync(message, stoppingToken);
-                    _channel.BasicAck(ea.DeliveryTag, false, true);
+                    _channel.BasicAck(ea.DeliveryTag, false);
                 }
                 else 
                 {
-                    _logger.Debug.LogWarning("Failed to deserialize PatientMessage: {MessageBody}", messageJson);
+                    _logger.LogWarning("Failed to deserialize PatientMessage: {MessageBody}", messageJson);
                     _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
             }
@@ -71,7 +77,7 @@ public class PatientEventConsumer : BackgroundService
             _logger.LogInformation("Patient event consumer started");
 
             await Task.Delay(Timeout.Infinite, stoppingToken);
-        }   
+        };   
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken) 
