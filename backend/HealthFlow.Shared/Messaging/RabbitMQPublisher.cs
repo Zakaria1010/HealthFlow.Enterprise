@@ -72,6 +72,7 @@ namespace HealthFlow.Shared.Messaging
         {
             if (!IsConnected)
             {
+                _logger.LogError("RabbitMQ connection is not available. Cannot publish message.");
                 throw new InvalidOperationException("RabbitMQ connection is not available");
             }
 
@@ -91,18 +92,22 @@ namespace HealthFlow.Shared.Messaging
                 properties.Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 properties.ContentType = "application/json";
 
+                _logger.LogInformation("Publishing message to exchange: {Exchange}, routing key: {RoutingKey}", 
+                    exchange, routingKey);
+                _logger.LogDebug("Message content: {MessageBody}", json);
+
                 _channel.BasicPublish(
                     exchange: exchange,
                     routingKey: routingKey,
                     basicProperties: properties,
                     body: body);
                 
-                _logger.LogDebug("Message published to {Exchange}/{RoutingKey}: {MessageType}", 
-                    exchange, routingKey, typeof(T).Name);
+                _logger.LogInformation("✅ Message published successfully to {Exchange}/{RoutingKey}", 
+                    exchange, routingKey);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error publishing message to {Exchange}/{RoutingKey}", exchange, routingKey);
+                _logger.LogError(ex, "❌ Error publishing message to {Exchange}/{RoutingKey}", exchange, routingKey);
                 throw;
             }
         }

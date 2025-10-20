@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, AreaChart, Area 
 } from 'recharts';
-import * as signalR from '@microsoft/signalr';
-import './Dashboard.css';
+import * as signalR from '@microsoft/signalr'
+import { AddPatientForm } from './AddPatientForm'
+import './Dashboard.css'
 
 interface DashboardData {
   totalPatients: number;
@@ -44,6 +45,20 @@ interface Patient {
   status: string;
 }
 
+export enum PatientStatus {
+  Admitted = 0,
+  Discharged = 1,
+  InTreatment = 2,
+  Critical = 3
+}
+
+export const PatientStatusDisplay: Record<PatientStatus, string> = {
+  [PatientStatus.Admitted]: "Admitted",
+  [PatientStatus.Discharged]: "Discharged",
+  [PatientStatus.InTreatment]: "InTreatment",
+  [PatientStatus.Critical]: "Critical",
+}
+
 type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'reconnecting';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
@@ -58,6 +73,13 @@ export const Dashboard: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [patientEvents, setPatientEvents] = useState<{ [key: string]: RealTimeEvent[] }>({});
+
+  // Add this function to refresh data when patient is added
+  const handlePatientAdded = () => {
+    loadDashboardData();
+    loadPatients();
+    // The real-time events will automatically update via SignalR
+  }
 
   useEffect(() => {
     initializeSignalR();
@@ -178,7 +200,7 @@ export const Dashboard: React.FC = () => {
   const loadPatients = async () => {
     try {
       // This would typically come from the Patient Service
-      const response = await fetch('http://localhost:5000/api/patients');
+      const response = await fetch('http://localhost:5003/api/patients');
       const data = await response.json();
       setPatients(data);
     } catch (error) {
@@ -221,7 +243,7 @@ export const Dashboard: React.FC = () => {
 
   const loadPatientEvents = async (patientId: string) => {
     try {
-      const response = await fetch(`http://localhost:5002/api/analytics/patients/${patientId}/events`);
+      const response = await fetch(`http://localhost:5158/api/analytics/patients/${patientId}/events`);
       const events = await response.json();
       setPatientEvents(prev => ({
         ...prev,
@@ -322,7 +344,8 @@ export const Dashboard: React.FC = () => {
           </button>
         </div>
       </div>
-
+      {/* Add Patient Form - Add this section */}
+      <AddPatientForm onPatientAdded={handlePatientAdded} />
       {/* Patient Selection */}
       <div className="patient-selection">
         <h3>Monitor Patient</h3>
@@ -334,14 +357,13 @@ export const Dashboard: React.FC = () => {
               onClick={() => selectedPatient === patient.id ? unsubscribeFromPatient(patient.id) : subscribeToPatient(patient.id)}
             >
               {patient.firstName} {patient.lastName}
-              <span className={`patient-status ${patient.status.toLowerCase()}`}>
-                {patient.status}
+              <span className={`patient-status ${(PatientStatusDisplay[Number(patient.status) as PatientStatus]).toLowerCase()}`}>
+                {PatientStatusDisplay[Number(patient.status) as PatientStatus]}
               </span>
             </button>
           ))}
         </div>
       </div>
-
       {/* KPI Grid */}
       <div className="kpi-grid">
         <div className="kpi-card primary">

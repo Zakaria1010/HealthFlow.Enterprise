@@ -116,7 +116,7 @@ public class PatientsController : ControllerBase
                 patient.Id.ToString(), 
                 payload, Guid.NewGuid().ToString());
 
-            await _messagePublisher.PublishAsync("patients.events", message, cancellationToken);
+            await _messagePublisher.PublishAsync("patient.events", "patient.created", message, cancellationToken);
             await _hubContext.Clients.All.SendAsync("PatientCreated", patient);
             
             _logger.LogInformation("Patient created: {PatientId}", patient.Id);

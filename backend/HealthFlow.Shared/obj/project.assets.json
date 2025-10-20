@@ -1002,7 +1002,7 @@
       "Microsoft.Extensions.DependencyInjection >= 9.0.10",
       "Microsoft.Extensions.Diagnostics.HealthChecks >= 7.*",
       "Microsoft.Extensions.Logging >= 9.0.10",
-      "RabbitMQ.Client >= 6.*"
+      "RabbitMQ.Client >= 6.8.1"
     ]
   },
   "packageFolders": {
@@ -1064,7 +1064,7 @@
           },
           "RabbitMQ.Client": {
             "target": "Package",
-            "version": "[6.*, )"
+            "version": "[6.8.1, )"
           }
         },
         "imports": [

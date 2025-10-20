@@ -14,14 +14,16 @@ var host = Host.CreateDefaultBuilder(args)
     {
         var configuration = context.Configuration;
 
-        // 🔌 Add Infrastructure dependencies (RabbitMQ + Cosmos)
+        // Infrastructure
         services.AddInfrastructure(configuration);
 
-        // 🧩 Register background processing
+        // Background processing
         services.AddSingleton<PatientProcessingChannel>();
         services.AddSingleton<IProcessingRepository, ProcessingRepository>();
+        
+        // Register consumers - make sure these are added!
         services.AddHostedService<PatientProcessingService>();
-        services.AddHostedService<PatientEventConsumer>();    
+        services.AddHostedService<PatientEventConsumer>(); // This must be present!
     })
     .Build();
 
