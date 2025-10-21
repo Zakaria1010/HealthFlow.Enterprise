@@ -40,9 +40,9 @@ namespace HealthFlow.Shared.Messaging
                 _channel = _connection.CreateModel();
                 
                 // Ensure exchanges exist
-                _channel.ExchangeDeclare("patient.events", ExchangeType.Topic, durable: true);
-                _channel.ExchangeDeclare("analytics.events", ExchangeType.Topic, durable: true);
-                _channel.ExchangeDeclare("system.events", ExchangeType.Fanout, durable: true);
+                _channel.ExchangeDeclare("patient.events", "topic", durable: true);
+                _channel.ExchangeDeclare("analytics.events", "topic", durable: true);
+                _channel.ExchangeDeclare("system.events", "fanout", durable: true);
                 
                 _logger.LogInformation("RabbitMQ publisher connected to {HostName}", factory.HostName);
             }

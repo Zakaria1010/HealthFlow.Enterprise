@@ -70,7 +70,7 @@ namespace HealthFlow.Services.Analytics.Extensions
                 await database.CreateContainerIfNotExistsAsync(new ContainerProperties
                 {
                     Id = containerId,
-                    PartitionKeyPath = "/partitionKey"
+                    PartitionKeyPath = "/patientId"
                 });
 
                 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();

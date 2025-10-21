@@ -32,7 +32,7 @@ namespace HealthFlow.BackgroundWorker.Consumers
                 _channel = _connection.CreateModel();
                 
                 // Declare exchange and queue
-                _channel.ExchangeDeclare("patient.events", ExchangeType.Topic, durable: true);
+                _channel.ExchangeDeclare("patient.events", "topic", durable: true);
                 _channel.QueueDeclare("patient-processing", durable: true, exclusive: false, autoDelete: false);
                 _channel.QueueBind("patient-processing", "patient.events", "patient.*");
                 _channel.BasicQos(prefetchSize: 0, prefetchCount: 10, global: false);

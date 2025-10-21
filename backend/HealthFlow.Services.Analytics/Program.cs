@@ -27,12 +27,12 @@ builder.Services.AddHostedService<AnalyticsEventConsumer>();
 // 2️⃣ Register AnalyticsRepository (Scoped or Singleton, depending on usage)
 builder.Services.AddScoped<IAnalyticsRepository>(sp =>
 {
-    var config = sp.GetRequiredService<IConfiguration>();
+    var configuration = sp.GetRequiredService<IConfiguration>();
     var cosmosClient = sp.GetRequiredService<CosmosClient>();
     var logger = sp.GetRequiredService<ILogger<AnalyticsRepository>>();
 
-    var dbId = config["CosmosDb:DatabaseId"];
-    var containerId = config["CosmosDb:ContainerId"];
+    var dbId = configuration["CosmosDb:DatabaseId"];
+    var containerId = configuration["CosmosDb:ContainerId"];
 
     return new AnalyticsRepository(cosmosClient, dbId, containerId, logger);
 });

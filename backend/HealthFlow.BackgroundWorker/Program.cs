@@ -32,32 +32,64 @@ await InitializeDatabaseAsync(host.Services);
 
 await host.RunAsync();
 
-async Task InitializeDatabaseAsync(IServiceProvider serviceProvider)
+static async Task InitializeDatabaseAsync(IServiceProvider serviceProvider)
 {
     using var scope = serviceProvider.CreateScope();
+
     var cosmosClient = scope.ServiceProvider.GetRequiredService<CosmosClient>();
     var options = scope.ServiceProvider.GetRequiredService<IOptions<CosmosDbOptions>>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>(); // Get configuration from DI
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+    var databaseId = options.Value.DatabaseId;
+    var containerId = options.Value.ContainerId;
+    var partitionKeyPath = configuration["CosmosDb:PartitionKeyPath"];
 
     try
     {
-        // Create database if not exists
-        var databaseResponse = await cosmosClient.CreateDatabaseIfNotExistsAsync(options.Value.DatabaseId);
-        var database = databaseResponse.Database;
-        var partitionKeyPath = configuration["CosmosDb:PartitionKeyPath"];
-        // Create container if not exists
-        await database.CreateContainerIfNotExistsAsync(new ContainerProperties
-        {
-            Id = options.Value.ContainerId,
-            PartitionKeyPath = "/partitionKey"
-        });
+        logger.LogInformation("Initializing Cosmos DB: {DatabaseId}/{ContainerId}", databaseId, containerId);
 
-        logger.LogInformation("Background Worker database initialized: {DatabaseId}", options.Value.DatabaseId);
+        // Validate endpoint reachability before attempting creation
+        var accountEndpoint = configuration["CosmosDb:AccountEndpoint"];
+        if (!Uri.TryCreate(accountEndpoint, UriKind.Absolute, out var endpointUri))
+        {
+            throw new InvalidOperationException($"Invalid CosmosDb AccountEndpoint: '{accountEndpoint}'.");
+        }
+
+        logger.LogInformation("Connecting to Cosmos DB at {Endpoint}", endpointUri);
+
+        // Create database if not exists
+        var databaseResponse = await cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+        var database = databaseResponse.Database;
+
+        // Create container if not exists
+        var containerProperties = new ContainerProperties
+        {
+            Id = containerId,
+            PartitionKeyPath = partitionKeyPath
+        };
+
+        var containerResponse = await database.CreateContainerIfNotExistsAsync(containerProperties);
+
+        logger.LogInformation(
+            "Cosmos DB initialized successfully. Database: {DatabaseId}, Container: {ContainerId}, PartitionKey: {PartitionKeyPath}",
+            databaseId, containerId, partitionKeyPath);
+    }
+    catch (CosmosException cex)
+    {
+        logger.LogError(cex, "Cosmos DB returned an error during initialization. Status: {StatusCode}, Message: {Message}",
+            cex.StatusCode, cex.Message);
+        throw;
+    }
+    catch (HttpRequestException hex)
+    {
+        logger.LogError(hex, "Network error connecting to Cosmos DB at {Endpoint}. Check your endpoint, DNS, and firewall settings.",
+            configuration["CosmosDb:AccountEndpoint"]);
+        throw;
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error initializing Background Worker database");
+        logger.LogError(ex, "Unexpected error initializing Cosmos DB database or container.");
         throw;
     }
 }
