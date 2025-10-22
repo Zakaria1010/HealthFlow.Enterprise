@@ -17,6 +17,7 @@ public class AnalyticsEventConsumer : BackgroundService
     private readonly IHubContext<AnalyticsHub> _hubContext;
     private readonly ILogger<AnalyticsEventConsumer> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private bool _disposed = false;
 
     public AnalyticsEventConsumer(
         IServiceProvider serviceProvide,
@@ -28,27 +29,43 @@ public class AnalyticsEventConsumer : BackgroundService
         _hubContext = hubContext;
         _logger = logger;
         
-        // Get connection from the shared publisher
-        _connection = messagePublisher.GetConnection();
-        _channel = _connection.CreateModel();
+        try
+        {
+            _logger.LogInformation("🔄 Initializing AnalyticsEventConsumer with async mode...");
+            // Get connection from the shared publisher
+            _connection = messagePublisher.GetConnection();
+            _channel = _connection.CreateModel();
 
-        // Declare RabbitMQ exchange and queue for analytics events
-        _channel.ExchangeDeclare("analytics.events", ExchangeType.Topic, durable: true);
-        _channel.QueueDeclare("analytics-processing", durable: true, exclusive: false, autoDelete: false);
-        _channel.QueueBind("analytics-processing", "analytics.events", "analytics.*");
-        
-        _channel.BasicQos(prefetchSize: 0, prefetchCount: 10, global: false);
+            // Declare RabbitMQ exchange and queue for analytics events
+            _channel.ExchangeDeclare("analytics.events", "topic", durable: true);
+            _channel.QueueDeclare("analytics-processing", durable: true, exclusive: false, autoDelete: false);
+            _channel.QueueBind("analytics-processing", "analytics.events", "analytics.*");
+            
+            _channel.BasicQos(prefetchSize: 0, prefetchCount: 10, global: false);
+            _logger.LogInformation("✅ AnalyticsEventConsumer initialized successfully for async mode");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Failed to initialize AnalyticsEventConsumer");
+            throw;
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) 
     {
+        _logger.LogInformation("🚀 AnalyticsEventConsumer starting in async mode...");
+
         var consumer = new AsyncEventingBasicConsumer(_channel);
         consumer.Received += async (model, ea) =>
         {
+            _logger.LogInformation("📨 Message received from RabbitMQ. DeliveryTag: {DeliveryTag}", ea.DeliveryTag);
+            
             try
             {
                 var body = ea.Body.ToArray();
                 var messageJson = Encoding.UTF8.GetString(body);
+
+                _logger.LogDebug("Raw message JSON: {MessageJson}", messageJson);
 
                 var analyticsEvent = JsonSerializer.Deserialize<AnalyticsEvent>(
                     messageJson,
@@ -60,12 +77,13 @@ public class AnalyticsEventConsumer : BackgroundService
                 if (analyticsEvent != null)
                 {
                     _logger.LogInformation(
-                        "Received analytics event: {EventType} for patient {PatientId}", 
+                        "✅ Successfully deserialized analytics event: {EventType} for patient {PatientId}", 
                         analyticsEvent.EventType, analyticsEvent.PatientId);
 
                     // Process the analytics event
                     await ProcessAnalyticsEvent(analyticsEvent); 
                     _channel.BasicAck(ea.DeliveryTag, multiple: false);
+                    _logger.LogInformation("✅ Message acknowledged");
                 }
                 else  {
                     _logger.LogWarning("Failed to deserialize AnalyticsEvent: {MessageJson}", messageJson);
@@ -73,11 +91,25 @@ public class AnalyticsEventConsumer : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error processing analytics event");
-                _channel.BasicNack(ea.DeliveryTag, multiple: false, requeue: true);
+                _logger.LogError(ex, "❌ Error processing analytics event. DeliveryTag: {DeliveryTag}", ea.DeliveryTag);
+                    _channel.BasicNack(ea.DeliveryTag, false, true);
                 throw;
-            }
+            }   
         };
+
+        // Start consuming
+        var consumerTag = _channel.BasicConsume("analytics-processing", false, consumer);
+        _logger.LogInformation("🎯 Analytics async consumer started. ConsumerTag: {ConsumerTag}", consumerTag);
+
+        // Keep the service running
+        try
+        {
+            await Task.Delay(Timeout.Infinite, stoppingToken);
+        }
+        catch (TaskCanceledException)
+        {
+            _logger.LogInformation("🛑 AnalyticsEventConsumer stopping due to cancellation");
+        }
     }
 
     public async Task ProcessAnalyticsEvent(AnalyticsEvent analyticsEvent)
@@ -90,12 +122,14 @@ public class AnalyticsEventConsumer : BackgroundService
             await repository.AddAsync(analyticsEvent);
 
             // Broadcast real-time update to dashboard clients
-            await _hubContext.Clients.All.SendAsync("AnalyticsEventProcessed", 
-            new {
-                analyticsEvent.EventType,
+            await _hubContext.Clients.All.SendAsync("AnalyticsEventProcessed", new 
+            {
+                analyticsEvent.Id,
                 analyticsEvent.PatientId,
+                analyticsEvent.EventType,
                 analyticsEvent.Timestamp,
-                analyticsEvent.Payload
+                analyticsEvent.Payload,
+                analyticsEvent.Service
             });
             _logger.LogInformation(
                 "Processed and broadcasted analytics event: {EventType} for patient {PatientId}", 
@@ -114,6 +148,18 @@ public class AnalyticsEventConsumer : BackgroundService
         _channel.Close();
         _connection.Close();
         await base.StopAsync(cancellationToken);
+    }
+
+    public override void Dispose()
+    {
+        if (!_disposed)
+        {
+            _channel?.Dispose();
+            _connection?.Dispose();
+            _disposed = true;
+        }
+        
+        base.Dispose();
     }
 
 }

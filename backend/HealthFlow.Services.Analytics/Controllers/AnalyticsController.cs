@@ -172,7 +172,8 @@ namespace HealthFlow.Services.Analytics.Controllers
                 var events = (await _repository.GetByTimeRangeAsync(startDate.Value, DateTime.UtcNow)).ToList();
                 var eventTypeDistribution = await _repository.GetEventTypeDistributionAsync(startDate);
                 var uniquePatientCount = await _repository.GetUniquePatientCountAsync(startDate);
-
+                _logger.LogInformation("Calculating dashboard data from {StartDate} with {EventCount} events", 
+                    startDate.ToString(), events);
                 var dashboardData = new DashboardData
                 {
                     TotalPatients = uniquePatientCount,

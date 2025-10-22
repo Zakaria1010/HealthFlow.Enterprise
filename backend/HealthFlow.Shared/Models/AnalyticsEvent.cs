@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace HealthFlow.Shared.Models
 {
     public class AnalyticsEvent
     {
-        [JsonPropertyName("id")]
+        [JsonPropertyNameAttribute("id")]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [JsonPropertyName("patientId")]
@@ -17,7 +18,7 @@ namespace HealthFlow.Shared.Models
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
         [JsonPropertyName("payload")]
-        public object Payload { get; set; } = new();
+        public JsonElement Payload { get; set; } = new();
 
         [JsonPropertyName("service")]
         public string Service { get; set; } = string.Empty;
@@ -33,7 +34,7 @@ namespace HealthFlow.Shared.Models
         public string PartitionKey => PatientId;
 
         // Helper methods for common event types
-        public static AnalyticsEvent CreatePatientEvent(string patientId, string eventType, string serviceName, object payload)
+        public static AnalyticsEvent CreatePatientEvent(string patientId, string eventType, string serviceName, JsonElement payload)
         {
             return new AnalyticsEvent
             {
@@ -45,7 +46,7 @@ namespace HealthFlow.Shared.Models
             };
         }
 
-        public static AnalyticsEvent CreateDeviceEvent(string patientId, string eventType, object payload)
+        public static AnalyticsEvent CreateDeviceEvent(string patientId, string eventType, JsonElement payload)
         {
             return new AnalyticsEvent
             {
@@ -57,7 +58,7 @@ namespace HealthFlow.Shared.Models
             };
         }
 
-        public static AnalyticsEvent CreateSystemEvent(string eventType, object payload)
+        public static AnalyticsEvent CreateSystemEvent(string eventType, JsonElement payload)
         {
             return new AnalyticsEvent
             {

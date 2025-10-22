@@ -3,6 +3,7 @@ using HealthFlow.Shared.Models;
 using HealthFlow.Shared.Messaging;
 using HealthFlow.Shared.Data;
 using HealthFlow.BackgroundWorker.Data;
+using System.Text.Json; 
 
 namespace HealthFlow.BackgroundWorker.Services;
 public class PatientProcessingService : BackgroundService
@@ -65,6 +66,12 @@ public class PatientProcessingService : BackgroundService
        {
             _logger.LogInformation("Worker {WorkerName} processing message {MessageId} for patient {PatientId}", workerName, message.Id, message.PatientId);
             
+            // Log the payload type and content
+            _logger.LogInformation("Payload type: {PayloadType}, Content: {PayloadJson}", 
+                message.Payload?.GetType().Name ?? "null",
+                System.Text.Json.JsonSerializer.Serialize(message.Payload, new JsonSerializerOptions { WriteIndented = true }));
+
+
             // Store in Background Worker's own database for tracking
             var processedEvent = new ProcessedEvent
             {
@@ -79,22 +86,36 @@ public class PatientProcessingService : BackgroundService
 
             await _processingRepository.AddAsync(processedEvent);
 
-            // Store in Cosmos DB for analytics
-            var analyticsEvent = AnalyticsEvent.CreatePatientEvent(
-                message.PatientId,
-                "PatientDataProcessed",
-                "BackgroundWorker",
-                message.Payload);
+            _logger.LogInformation("✅ Stored processed event {ProcessedEventId} in BackgroundWorker database", processedEvent.Id);
+            
+            // Create analytics event and publish to Analytics Service via messaging
+            var analyticsEvent = new AnalyticsEvent
+            {
+                Id = Guid.NewGuid().ToString(),
+                PatientId = message.PatientId,
+                EventType = message.EventType,
+                Timestamp = message.Timestamp,
+                Payload = (JsonElement)message.Payload,
+                Service = "BackgroundWorker",
+                CorrelationId = message.CorrelationId
+            };
 
             await _messagePublisher.PublishAsync(
                 "analytics.events",
                 "analytics.event.processed",
                 analyticsEvent, 
                 cancellationToken);
+
+            _logger.LogInformation("✅ Published analytics event to analytics.events with routing key: analytics.event.processed");
             
+            // Mark as completed
+            await _processingRepository.MarkAsProcessedAsync(processedEvent.Id);
+
             // Simulate processing work
             await Task.Delay(Random.Shared.Next(50, 200), cancellationToken);
+
             stopwatch.Stop();
+
             _logger.LogInformation("{WorkerName} completed message {MessageId} in {ElapsedMs}ms", 
                 workerName, message.Id, stopwatch.ElapsedMilliseconds);
        }

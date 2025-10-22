@@ -21,19 +21,19 @@ public record PatientMessage(
     {
     }
 
-    // Factory methods for common event types 
-    public static PatientMessage CreatePatientCreated(string patientId, object patientData, string correlationId = null)
+    // Factory methods
+    public static PatientMessage CreatePatientCreated(string patientId, PatientCreatedPayload patientData, string correlationId = null)
     {
         return new PatientMessage(
             Guid.NewGuid(),
             patientId,
             EventTypes.PatientCreated,
             DateTime.UtcNow,
-            patientData,
+            patientData, // Make sure this is a serializable object
             correlationId ?? Guid.NewGuid().ToString());
     }
 
-    public static PatientMessage CreatePatientUpdated(string patientId, object patientData, string correlationId = null)
+    public static PatientMessage CreatePatientUpdated(string patientId, PatientUpdatedPayload patientData, string correlationId = null)
     {
         return new PatientMessage(
             Guid.NewGuid(),
@@ -55,7 +55,7 @@ public record PatientMessage(
             correlationId ?? Guid.NewGuid().ToString());
     }
 
-    public static PatientMessage CreatePatientDeleted(string patientId, object patientInfo, string correlationId = null)
+    public static PatientMessage CreatePatientDeleted(string patientId, PatientDeletedPayload patientInfo, string correlationId = null)
     {
         return new PatientMessage(
             Guid.NewGuid(),
@@ -66,7 +66,7 @@ public record PatientMessage(
             correlationId ?? Guid.NewGuid().ToString()); 
     }
 
-    public static PatientMessage CreateVitalSignsUpdated(string patientId, object vitalSigns, string correlationId = null)
+    public static PatientMessage CreateVitalSignsUpdated(string patientId, VitalSignsPayload vitalSigns, string correlationId = null)
     {
         return new PatientMessage(
             Guid.NewGuid(),
@@ -77,7 +77,7 @@ public record PatientMessage(
             correlationId ?? Guid.NewGuid().ToString());
     }
 
-    public static PatientMessage CreateCriticalAlert(string patientId, object alertData, string correlationId = null)
+    public static PatientMessage CreateCriticalAlert(string patientId, CriticalAlertPayload alertData, string correlationId = null)
     {
         return new PatientMessage(
             Guid.NewGuid(),

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "yj+8I0dwfMI8OkFWgU0H0vaLx4P+qTi0rfxVldQTkrgXYIjUH8pyq1iEL7uY09TmzYQzekH6gPJP43XdDXuPrQ==",
+  "dgSpecHash": "LpJZdZ3DYAM50OJSCCjXikwfOkdvqK8uP2Q13NIvhi5sk6pEjtiEuQ/4/KqmfjhUj9Bk+2/PHFFv7NsPpvIHHQ==",
   "success": true,
   "projectFilePath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Shared/HealthFlow.Shared.csproj",
   "expectedPackageFiles": [
@@ -17,6 +17,7 @@
     "/Users/steve/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.10/microsoft.extensions.logging.abstractions.9.0.10.nupkg.sha512",
     "/Users/steve/.nuget/packages/microsoft.extensions.options/9.0.10/microsoft.extensions.options.9.0.10.nupkg.sha512",
     "/Users/steve/.nuget/packages/microsoft.extensions.primitives/9.0.10/microsoft.extensions.primitives.9.0.10.nupkg.sha512",
+    "/Users/steve/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/steve/.nuget/packages/rabbitmq.client/6.8.1/rabbitmq.client.6.8.1.nupkg.sha512",
     "/Users/steve/.nuget/packages/system.buffers/4.5.1/system.buffers.4.5.1.nupkg.sha512",
     "/Users/steve/.nuget/packages/system.componentmodel.annotations/5.0.0/system.componentmodel.annotations.5.0.0.nupkg.sha512",

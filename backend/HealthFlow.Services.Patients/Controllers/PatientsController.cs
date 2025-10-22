@@ -96,9 +96,11 @@ public class PatientsController : ControllerBase
     {   try
         {
             // Validate MedicalRecordNumber uniqueness
-            if(await _context.Patients.AnyAsync(p => p.Id == patient.Id)){
-                return BadRequest("Medial Record Number must be unique");
+            if (await _context.Patients.AnyAsync(p => p.MedicalRecordNumber == patient.MedicalRecordNumber))
+            {
+                return BadRequest("Medical Record Number must be unique");
             }
+
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
             
@@ -114,14 +116,15 @@ public class PatientsController : ControllerBase
 
             var message = PatientMessage.CreatePatientCreated(
                 patient.Id.ToString(), 
-                payload, Guid.NewGuid().ToString());
+                payload, 
+                Guid.NewGuid().ToString());
 
             await _messagePublisher.PublishAsync("patient.events", "patient.created", message, cancellationToken);
             await _hubContext.Clients.All.SendAsync("PatientCreated", patient);
             
-            _logger.LogInformation("Patient created: {PatientId}", patient.Id);
+            _logger.LogInformation("Patient created: {PatientId} - {FullName}", patient.Id, patient.FullName);
             return CreatedAtAction(nameof(GetPatient), new { id = patient.Id }, patient);
-        }
+        }   
         catch (Exception ex)
         {
             

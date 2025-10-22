@@ -1123,6 +1123,7 @@
           "Microsoft.Extensions.DependencyInjection": "9.0.10",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.0",
           "Microsoft.Extensions.Logging": "9.0.10",
+          "Newtonsoft.Json": "13.0.3",
           "RabbitMQ.Client": "6.8.1"
         },
         "compile": {

@@ -127,7 +127,6 @@ namespace HealthFlow.Services.Analytics.Data
                     var response = await query.ReadNextAsync();
                     results.AddRange(response);
                 }
-
                 return results;
             }
             catch (Exception ex)
