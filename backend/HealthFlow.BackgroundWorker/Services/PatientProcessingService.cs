@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using HealthFlow.Shared.Models;
+using System.Text.Json.Serialization;
 using HealthFlow.Shared.Messaging;
 using HealthFlow.Shared.Data;
 using HealthFlow.BackgroundWorker.Data;
 using System.Text.Json; 
+using HealthFlow.Shared.Utils;
 
 namespace HealthFlow.BackgroundWorker.Services;
 public class PatientProcessingService : BackgroundService
@@ -71,6 +73,14 @@ public class PatientProcessingService : BackgroundService
                 message.Payload?.GetType().Name ?? "null",
                 System.Text.Json.JsonSerializer.Serialize(message.Payload, new JsonSerializerOptions { WriteIndented = true }));
 
+            // ✅ Fix: Convert to proper object type based on your JSON structure
+            object normalizedPayload = message.Payload switch
+            {
+                JsonElement jsonElement => JsonSerializer.Deserialize<PatientJson>(jsonElement.GetRawText()),
+                string jsonString when JsonUtils.IsJson<string>(jsonString) => JsonSerializer.Deserialize<PatientJson>(jsonString),
+                string jsonString => jsonString,
+                _ => message.Payload
+            };
 
             // Store in Background Worker's own database for tracking
             var processedEvent = new ProcessedEvent
@@ -80,7 +90,7 @@ public class PatientProcessingService : BackgroundService
                 EventType = message.EventType,
                 ReceivedAt = DateTime.UtcNow,
                 Status = "Processing",
-                Payload = message.Payload,
+                Payload = normalizedPayload,
                 RetryCount = 0
             };
 
@@ -95,7 +105,7 @@ public class PatientProcessingService : BackgroundService
                 PatientId = message.PatientId,
                 EventType = message.EventType,
                 Timestamp = message.Timestamp,
-                Payload = (JsonElement)message.Payload,
+                Payload = normalizedPayload,
                 Service = "BackgroundWorker",
                 CorrelationId = message.CorrelationId
             };
@@ -125,3 +135,5 @@ public class PatientProcessingService : BackgroundService
        }
     }
 }
+
+

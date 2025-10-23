@@ -8,6 +8,8 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 using HealthFlow.Shared.Data;
+using HealthFlow.Shared.Utils;
+using HealthFlow.Shared.Models;
 
 namespace HealthFlow.Services.Analytics.Consumers;
 public class AnalyticsEventConsumer : BackgroundService
@@ -65,7 +67,7 @@ public class AnalyticsEventConsumer : BackgroundService
                 var body = ea.Body.ToArray();
                 var messageJson = Encoding.UTF8.GetString(body);
 
-                _logger.LogDebug("Raw message JSON: {MessageJson}", messageJson);
+                _logger.LogInformation("Raw message JSON: {MessageJson}", messageJson);
 
                 var analyticsEvent = JsonSerializer.Deserialize<AnalyticsEvent>(
                     messageJson,
@@ -118,8 +120,29 @@ public class AnalyticsEventConsumer : BackgroundService
         {
             using var scope = _serviceProvider.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<IAnalyticsRepository>();
+            
+            // ✅ Fix: Convert to proper object type based on your JSON structure
+            object normalizedPayload = analyticsEvent.Payload switch
+            {
+                JsonElement jsonElement => JsonSerializer.Deserialize<PatientJson>(jsonElement.GetRawText()),
+                string jsonString when JsonUtils.IsJson<string>(jsonString) => JsonSerializer.Deserialize<PatientJson>(jsonString),
+                string jsonString => jsonString,
+                _ => analyticsEvent.Payload
+            };
+            
+            // Create analytics event and publish to Analytics Service via messaging
+
+            var newAnalyticsEvent = new AnalyticsEvent
+            {
+                Id = analyticsEvent.Id,
+                PatientId = analyticsEvent.PatientId,
+                EventType = analyticsEvent.EventType,
+                Timestamp = analyticsEvent.Timestamp,
+                Payload = normalizedPayload,
+                Service = analyticsEvent.Service
+            };
             // Store in repository (if needed for additional processing)
-            await repository.AddAsync(analyticsEvent);
+            await repository.AddAsync(newAnalyticsEvent);
 
             // Broadcast real-time update to dashboard clients
             await _hubContext.Clients.All.SendAsync("AnalyticsEventProcessed", new 
