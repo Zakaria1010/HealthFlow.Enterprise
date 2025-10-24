@@ -32,12 +32,14 @@ jobs:
     - name: Build Backend
       run: |
         echo "🏗️ Building backend services..."
-        dotnet build backend/**/*.csproj --configuration Release --no-restore --verbosity minimal
+        dotnet build backend/HealthFlow.sln --configuration Release --no-restore --verbosity minimal
+
     
     - name: Run Tests
       run: |
         echo "🧪 Running tests..."
-        dotnet test backend/**/*.csproj --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+        dotnet test backend/HealthFlow.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
     
     - name: Upload Test Results
       if: always()
@@ -80,7 +82,7 @@ jobs:
         npm test -- --watchAll=false --passWithNoTests
     
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: frontend-build
         path: frontend/build/

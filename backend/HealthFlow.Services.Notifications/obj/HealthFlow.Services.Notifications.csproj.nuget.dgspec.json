@@ -129,9 +129,13 @@
               "target": "Package",
               "version": "[9.0.10, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "RabbitMQ.Client": {
               "target": "Package",
-              "version": "[6.*, )"
+              "version": "[6.8.1, )"
             }
           },
           "imports": [

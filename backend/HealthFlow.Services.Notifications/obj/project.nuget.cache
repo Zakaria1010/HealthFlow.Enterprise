@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "oClCOGpJWn3uShUjSOla6d/Fpt9fGn+4eK9uJ7s7wc+63/bjNnzmAIqx4W288IdgYLls5fF7Oz23+iZkkcKq4w==",
+  "dgSpecHash": "i0pEoFMOxjpHVSKQLf6dylPLBgs/ri+FQaCaQsmv9ker0MtJd13M/L+u5PPQswdnEyGAhIpf8xAyArc42qOhIg==",
   "success": true,
   "projectFilePath": "/Users/steve/HealthFlow.Enterprise/backend/HealthFlow.Services.Notifications/HealthFlow.Services.Notifications.csproj",
   "expectedPackageFiles": [
@@ -20,6 +20,7 @@
     "/Users/steve/.nuget/packages/microsoft.extensions.options/9.0.10/microsoft.extensions.options.9.0.10.nupkg.sha512",
     "/Users/steve/.nuget/packages/microsoft.extensions.primitives/9.0.10/microsoft.extensions.primitives.9.0.10.nupkg.sha512",
     "/Users/steve/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
+    "/Users/steve/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/steve/.nuget/packages/rabbitmq.client/6.8.1/rabbitmq.client.6.8.1.nupkg.sha512",
     "/Users/steve/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/steve/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
