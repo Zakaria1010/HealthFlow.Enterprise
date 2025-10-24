@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "environment": {
+        "value": "production"
+      },
+      "location": {
+        "value": "eastus2"
+      },
+      "sqlSku": {
+        "value": "GP_Gen5_2"
+      },
+      "cosmosThroughput": {
+        "value": 1000
+      },
+      "containerAppReplicas": {
+        "value": 3
+      }
+    }
+  }

@@ -1,0 +1,106 @@
+name: HealthFlow CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  NODE_VERSION: '18.x'
+
+jobs:
+  build-backend:
+    name: Build Backend Services
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore Dependencies
+      run: |
+        echo "📦 Restoring NuGet packages..."
+        dotnet restore backend/HealthFlow.sln || dotnet restore backend/**/*.csproj
+    
+    - name: Build Backend
+      run: |
+        echo "🏗️ Building backend services..."
+        dotnet build backend/**/*.csproj --configuration Release --no-restore --verbosity minimal
+    
+    - name: Run Tests
+      run: |
+        echo "🧪 Running tests..."
+        dotnet test backend/**/*.csproj --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+    
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: dotnet-test-results
+        path: backend/**/TestResults/*.trx
+
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: Install Dependencies
+      run: |
+        echo "📦 Installing npm packages..."
+        cd frontend
+        npm ci
+    
+    - name: Build Frontend
+      run: |
+        echo "🏗️ Building React app..."
+        cd frontend
+        npm run build
+    
+    - name: Run Tests
+      run: |
+        echo "🧪 Running frontend tests..."
+        cd frontend
+        npm test -- --watchAll=false --passWithNoTests
+    
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-build
+        path: frontend/build/
+
+  validate-structure:
+    name: Validate Project Structure
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Check Backend Structure
+      run: |
+        echo "🔍 Checking backend structure..."
+        ls -la backend/ || echo "Backend folder not found"
+        find backend/ -name "*.csproj" -type f | head -10
+    
+    - name: Check Frontend Structure
+      run: |
+        echo "🔍 Checking frontend structure..."
+        ls -la frontend/ || echo "Frontend folder not found"
+        [ -f "frontend/package.json" ] && echo "✅ package.json found" || echo "❌ package.json missing"
